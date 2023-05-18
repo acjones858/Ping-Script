@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Path to the text file containing IP addresses
+FILE_PATH="SM.txt"
+
+# Start time (3 PM)
+START_HOUR=15
+START_MINUTE=00
+
+# Get the current time
+CURRENT_HOUR=$(date +%H)
+CURRENT_MINUTE=$(date +%M)
+
+# Calculate the time until the next start time
+START_TIME=$(date -d "$START_HOUR:$START_MINUTE" +%s)
+CURRENT_TIME=$(date -d "$CURRENT_HOUR:$CURRENT_MINUTE" +%s)
+TIME_DIFF=$((START_TIME - CURRENT_TIME))
+
+# Check if it's time to start pinging
+if [[ $TIME_DIFF -le 0 ]]; then
+  TIME_DIFF=$((TIME_DIFF + 86400))  # Add 24 hours (in seconds) to handle the case where the start time has already passed today
+fi
+
+# Wait until the start time
+sleep "$TIME_DIFF"s
+
+# Loop infinitely
+while true; do
+  # Read each IP address from the text file
+  while IFS= read -r ip; do
+    # Ping the IP address
+    ping -c 1 "$ip"
+  done < "$FILE_PATH"
+
+  # Wait for 3 hours
+  sleep 3h
+done
