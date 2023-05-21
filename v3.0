@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# Full path to the text file containing IP addresses and nicknames
+FILE_PATH="/home/anthony/SM.txt"
+
+# Associative array to store IP address nicknames
+declare -A IP_NICKNAMES=(
+  ["10.0.4.11"]="R&R-SAN"
+  ["10.0.4.100"]="DCIM-SAN"
+  ["10.51.0.21"]="DCIM-DAL"
+  ["172.18.5.231"]="DCIM-CHAR"
+  ["10.38.0.100"]="DCIM-SEA"
+  ["10.50.1.99"]="DCIM-JAX"
+)
+
+# Array of specific times to ping (in 24-hour format)
+PING_TIMES=("00:00" "03:00" "06:00" "09:00" "12:00" "15:00" "18:00" "21:00")
+
+# Function to check if the ping is successful and store the results
+check_ping_status() {
+  ip_address=$1
+  nickname=$2
+  if ping -c 1 "$ip_address" >/dev/null; then
+    echo "Pass: $nickname ($ip_address)"
+  else
+    echo "Fail: $nickname ($ip_address)"
+  fi
+}
+
+# Loop infinitely
+while true; do
+  # Get the current time
+  CURRENT_TIME=$(date +%H:%M)
+
+  # Check if the current time matches any of the ping times
+  if [[ " ${PING_TIMES[*]} " =~ " $CURRENT_TIME " ]]; then
+    # Read each IP address from the array and check ping status
+    ping_results=""
+    for ip_address in "${!IP_NICKNAMES[@]}"; do
+      nickname="${IP_NICKNAMES[$ip_address]}"
+      ping_status=$(check_ping_status "$ip_address" "$nickname")
+      ping_results+="\n$ping_status"
+    done
+
+    # Print the ping results
+    echo -e "Ping results at $CURRENT_TIME:"
+    echo -e "$ping_results"
+  fi
+
+  # Wait for 1 minute before checking the time again
+  sleep 1m
+done
