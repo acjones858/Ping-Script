@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# Full path to the text file containing IP addresses
+FILE_PATH="/home/anthony/SM.txt"
+
+# Start time (9 AM)
+START_HOUR=9
+START_MINUTE=00
+
+# Function to check if the ping is successful and store the results
+check_ping_status() {
+  ip_address=$1
+  if ping -c 1 "$ip_address" >/dev/null; then
+    echo "Pass: $ip_address"
+  else
+    echo "Fail: $ip_address"
+  fi
+}
+
+# Loop infinitely
+while true; do
+  # Get the current time
+  CURRENT_HOUR=$(date +%H)
+  CURRENT_MINUTE=$(date +%M)
+
+  # Calculate the time until the next start time
+  START_TIME=$(date -d "$START_HOUR:$START_MINUTE" +%s)
+  CURRENT_TIME=$(date -d "$CURRENT_HOUR:$CURRENT_MINUTE" +%s)
+  TIME_DIFF=$((START_TIME - CURRENT_TIME))
+
+  # Check if the next start time is in the future
+  if [[ $TIME_DIFF -gt 0 ]]; then
+    # Wait until the next start time
+    sleep "$TIME_DIFF"
+  fi
+
+  # Read each IP address from the text file and check ping status
+  ping_results=""
+  while IFS= read -r ip; do
+    ping_status=$(check_ping_status "$ip")
+    ping_results+="\n$ping_status"
+  done < "$FILE_PATH"
+
+  # Print the ping results
+  echo -e "Ping results:"
+  echo -e "$ping_results"
+
+  # Wait for 3 hours
+  sleep 3h
+done
+
