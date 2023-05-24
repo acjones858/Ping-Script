@@ -1,0 +1,79 @@
+#!/bin/bash
+
+# Full path to the text file containing IP addresses and nicknames
+FILE_PATH="/home/anthony/SM.txt"
+
+# Associative array to store IP address nicknames
+declare -A IP_NICKNAMES=(
+  ["10.0.4.11"]="R&R-SAN"
+  ["10.0.4.100"]="DCIM-SAN"
+  ["10.51.0.21"]="DCIM-DAL"
+  ["172.18.5.231"]="DCIM-CHAR"
+  ["10.38.0.100"]="DCIM-SEA"
+  ["10.50.1.99"]="DCIM-JAX"
+)
+
+# Array of specific times to ping (in 24-hour format)
+PING_TIMES=("00:00" "03:00" "06:00" "09:00" "12:00" "15:00" "18:00" "21:00")
+
+# Define color codes for formatting
+RED='\033[0;31m'
+LIGHT_GREEN='\033[1;32m'
+NC='\033[0m' # No color
+
+echo "Wait until next FACMON time..."
+echo "
+     "
+
+# Infinite loop
+while true; do
+  # Get the current time
+  CURRENT_TIME=$(date +"%m-%d %H:%M")
+
+  # Check if the current time matches any of the ping times
+  ping_flag=false
+  for ping_time in "${PING_TIMES[@]}"; do
+    if [[ "$ping_time" == "$(date +"%H:%M")" ]]; then
+      ping_flag=true
+      break
+    fi
+  done
+
+  if "$ping_flag"; then
+    # Display the ping timestamp
+    echo "Ping timestamp: $CURRENT_TIME"
+    echo "
+         "
+
+    # Read each IP address from the text file and check ping status
+    while IFS= read -r ip_address; do
+      nickname="${IP_NICKNAMES[$ip_address]}"
+      if ping -c 1 "$ip_address" >/dev/null; then
+        echo -e "${LIGHT_GREEN}Pass: $nickname ($ip_address)${NC}"
+      else
+        echo -e "${RED}Fail: $nickname ($ip_address)${NC}"
+      fi
+    done < "$FILE_PATH"
+  fi
+
+  # Calculate the time until the next ping time
+  current_timestamp=$(date +%s)
+  next_ping_time=""
+  for ping_time in "${PING_TIMES[@]}"; do
+    ping_timestamp=$(date -d "$ping_time" +%s)
+    if [[ $ping_timestamp -gt $current_timestamp ]]; then
+      next_ping_time=$ping_time
+      break
+    fi
+  done
+
+  if [[ -n "$next_ping_time" ]]; then
+    # Calculate the waiting time until the next ping time
+    waiting_time=$(date -d "$next_ping_time" +%s)
+    sleep_duration=$((waiting_time - current_timestamp))
+    sleep "$sleep_duration"
+  else
+    echo "Wait until next FACMON time..."
+    sleep 60  # Wait for 60 seconds before checking again
+  fi
+done
