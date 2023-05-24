@@ -51,7 +51,7 @@ while true; do
       if ping -c 1 "$ip_address" >/dev/null; then
         echo -e "${LIGHT_GREEN}Pass: $nickname ($ip_address)${NC}"
       else
-        echo -e "${RED}Fail: $nickname ($ip_address)${NC}"
+        echo -e "${RED}Fail: $nickname ($ip_address) Check Manually ${NC}"
       fi
     done < "$FILE_PATH"
   fi
