@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Print Ping 30m before && Wait till next FACMON time
+echo "Pings 30m before FACMON times."
+echo "Wait Till Next FACMON time..."
+
 # Full path to the text file containing IP addresses and nicknames
 FILE_PATH="/home/anthony/SM.txt"
 
