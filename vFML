@@ -17,6 +17,8 @@ declare -A IP_NICKNAMES=(
 PING_TIMES=("00:00" "03:00" "06:00" "09:00" "12:00" "15:00" "18:00" "21:00")
 
 echo "Wait until next FACMON time..."
+echo "
+"
 
 # Infinite loop
 while true; do
@@ -35,6 +37,8 @@ while true; do
   if $ping_flag; then
     # Display the ping timestamp
     echo "Ping timestamp: $CURRENT_TIME"
+    echo "
+    "
 
     # Read each IP address from the text file and check ping status
     while IFS= read -r ip_address; do
