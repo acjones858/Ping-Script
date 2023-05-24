@@ -11,10 +11,13 @@ declare -A IP_NICKNAMES=(
   ["172.18.5.231"]="DCIM-CHAR"
   ["10.38.0.100"]="DCIM-SEA"
   ["10.50.1.99"]="DCIM-JAX"
+  ["199.73.53.197"]="Panel"
+  ["8.34.125.237"]="Website"
+  
 )
 
 # Array of specific times to ping (in 24-hour format with minutes)
-PING_TIMES=("23:30" "02:30" "05:30" "08:30" "11:30" "14:30" "17:30" "20:30")
+PING_TIMES=("02:30" "05:30" "08:30" "11:30" "14:30" "17:30" "20:30" "23:30")
 
 # Define color codes for formatting
 LIGHT_RED='\033[1;31m'
@@ -23,7 +26,7 @@ LIGHT_BLUE='\033[1;34m'
 NC='\033[0m' # No color
 
 echo "Wait until next FACMON time..."
-
+echo
 # Infinite loop
 while true; do
   # Get the current time
@@ -48,7 +51,7 @@ while true; do
       if ping -c 1 "$ip_address" >/dev/null; then
         echo -e "${LIGHT_GREEN}Pass: $nickname ($ip_address)${NC}"
       else
-        echo -e "${LIGHT_RED}Fail: $nickname ($ip_address)${NC}"
+        echo -e "${LIGHT_RED}Fail: $nickname ($ip_address) Check Manually ${NC}"
       fi
     done < "$FILE_PATH"
   fi
