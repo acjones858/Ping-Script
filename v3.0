@@ -45,7 +45,9 @@ while true; do
     # Print the ping results
     echo -e "Ping results at $CURRENT_TIME:"
     echo -e "$ping_results"
-    # Print wait till next FACMON time
+else
+# Print wait till next FACMON time
+
     echo "Wait till next FACMON time..."
   fi
 
