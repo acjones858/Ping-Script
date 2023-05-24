@@ -1,10 +1,5 @@
 #!/bin/bash
 
-#Print Times are 30m before FACMON && Wait Till Next Time
-
-echo "Pings 30m before FACMON times."
-echo "Wait Till Next FACMON time...
-
 # Full path to the text file containing IP addresses and nicknames
 FILE_PATH="/home/anthony/SM.txt"
 
@@ -38,40 +33,38 @@ while true; do
   CURRENT_TIME=$(date +%H:%M)
 
   # Check if the current time matches any of the ping times
-  if [[ " ${PING_TIMES[*]} " =~ " $CURRENT_TIME " ]]; then
+  ping_flag=false
+  for ping_time in "${PING_TIMES[@]}"; do
+    if [[ "$ping_time" == "$CURRENT_TIME" ]]; then
+      ping_flag=true
+      break
+    fi
+  done
+
+  if $ping_flag; then
     # Read each IP address from the array and check ping status
     ping_results=""
     for ip_address in "${!IP_NICKNAMES[@]}"; do
       nickname="${IP_NICKNAMES[$ip_address]}"
-      ping_status=$(check_ping_status "$ip_address" "$nickname")
-      ping_results+="\n$ping_status"
+      check_ping_status "$ip_address" "$nickname"
     done
-
-    # Print the ping results
     echo -e "Ping results at $CURRENT_TIME:"
     echo -e "$ping_results"
   fi
 
   # Calculate the time until the next ping time
+  current_timestamp=$(date +%s)
   next_ping_time=""
   for ping_time in "${PING_TIMES[@]}"; do
-    if [[ "$ping_time" > "$CURRENT_TIME" ]]; then
+    ping_timestamp=$(date -d "$ping_time" +%s)
+    if [[ $ping_timestamp -gt $current_timestamp ]]; then
       next_ping_time=$ping_time
       break
     fi
   done
 
-  # Check if there's a next ping time and wait until then
   if [[ -n "$next_ping_time" ]]; then
-    # Get the current date
-    current_date=$(date +%Y-%m-%d)
-
     # Calculate the waiting time until the next ping time
-    waiting_time=$(date -d "$current_date $next_ping_time" +%s)
-    current_timestamp=$(date +%s)
+    waiting_time=$(date -d "$next_ping_time" +%s)
     sleep_duration=$((waiting_time - current_timestamp))
-
-    # Wait until the next ping time
-    sleep "$sleep_duration"
-  fi
-done
+    sleep
