@@ -50,5 +50,5 @@ while true; do
   fi
 
   # Wait for 1 minute before checking the time again
-  sleep 1m
+  sleep 60m
 done
