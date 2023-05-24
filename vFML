@@ -21,12 +21,12 @@ echo "Wait until next FACMON time..."
 # Infinite loop
 while true; do
   # Get the current time
-  CURRENT_TIME=$(date +%H:%M)
+  CURRENT_TIME=$(date +"%m-%d %H:%M")
 
   # Check if the current time matches any of the ping times
   ping_flag=false
   for ping_time in "${PING_TIMES[@]}"; do
-    if [[ "$ping_time" == "$CURRENT_TIME" ]]; then
+    if [[ "$ping_time" == "$(date +"%H:%M")" ]]; then
       ping_flag=true
       break
     fi
@@ -34,17 +34,17 @@ while true; do
 
   if $ping_flag; then
     # Display the ping timestamp
-    echo "Ping timestamp: $(date +%Y-%m-%d %H:%M:%S)"
+    echo "Ping timestamp: $CURRENT_TIME"
 
-    # Read each IP address from the array and check ping status
-    for ip_address in "${!IP_NICKNAMES[@]}"; do
+    # Read each IP address from the text file and check ping status
+    while IFS= read -r ip_address; do
       nickname="${IP_NICKNAMES[$ip_address]}"
       if ping -c 1 "$ip_address" >/dev/null; then
         echo "Pass: $nickname ($ip_address)"
       else
         echo "Fail: $nickname ($ip_address)"
       fi
-    done
+    done < "$FILE_PATH"
   fi
 
   # Calculate the time until the next ping time
