@@ -15,6 +15,9 @@ declare -A IP_NICKNAMES=(
 
 # Array of specific times to ping (in 24-hour format)
 PING_TIMES=("00:00" "03:00" "06:00" "09:00" "12:00" "15:00" "18:00" "21:00")
+
+echo "Wait until next FACMON time..."
+
 # Infinite loop
 while true; do
   # Get the current time
@@ -28,41 +31,20 @@ while true; do
       break
     fi
   done
-  
-# Function to check if the ping is successful and store the results
-check_ping_status() {
-  ip_address=$1
-  nickname=$2
-  if ping -c 1 "$ip_address" >/dev/null; then
-    echo "Pass: $nickname ($ip_address)"
-  else
-    echo "Fail: $nickname ($ip_address)"
-  fi
-}
-
-# Infinite loop
-#while true; do
-  # Get the current time
- # CURRENT_TIME=$(date +%H:%M)
-
-  # Check if the current time matches any of the ping times
-  #ping_flag=false
-  #for ping_time in "${PING_TIMES[@]}"; do
-   # if [[ "$ping_time" == "$CURRENT_TIME" ]]; then
-    #  ping_flag=true
-     # break
-    #fi
- # done
 
   if $ping_flag; then
+    # Display the ping timestamp
+    echo "Ping timestamp: $(date +%Y-%m-%d %H:%M:%S)"
+
     # Read each IP address from the array and check ping status
-    ping_results=""
     for ip_address in "${!IP_NICKNAMES[@]}"; do
       nickname="${IP_NICKNAMES[$ip_address]}"
-      check_ping_status "$ip_address" "$nickname"
+      if ping -c 1 "$ip_address" >/dev/null; then
+        echo "Pass: $nickname ($ip_address)"
+      else
+        echo "Fail: $nickname ($ip_address)"
+      fi
     done
-    echo -e "Ping results at $CURRENT_TIME:"
-    echo -e "$ping_results"
   fi
 
   # Calculate the time until the next ping time
