@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# Print Ping 30m before && Wait till next FACMON time
-echo "Pings 30m before FACMON times."
-echo "Wait Till Next FACMON time..."
-
 # Full path to the text file containing IP addresses and nicknames
 FILE_PATH="/home/anthony/SM.txt"
 
@@ -72,3 +68,8 @@ while true; do
     waiting_time=$(date -d "$next_ping_time" +%s)
     sleep_duration=$((waiting_time - current_timestamp))
     sleep "$sleep_duration"
+  else
+    echo "Wait until next FACMON time..."
+    sleep 60  # Wait for 60 seconds before checking again
+  fi
+done
