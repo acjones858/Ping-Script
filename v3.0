@@ -14,7 +14,7 @@ declare -A IP_NICKNAMES=(
 )
 
 # Array of specific times to ping (in 24-hour format)
-PING_TIMES=("00:00" "03:00" "06:00" "09:00" "12:00" "15:00" "18:00" "21:00")
+PING_TIMES=("23:30" "02:30" "05:30" "08:30" "11:30" "14:30" "17:30" "20:30")
 
 # Function to check if the ping is successful and store the results
 check_ping_status() {
@@ -45,6 +45,8 @@ while true; do
     # Print the ping results
     echo -e "Ping results at $CURRENT_TIME:"
     echo -e "$ping_results"
+    # Print wait till next FACMON time
+    echo "Wait till next FACMON time..."
   fi
 
   # Wait for 1 minute before checking the time again
