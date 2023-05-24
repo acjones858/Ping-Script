@@ -1,5 +1,10 @@
 #!/bin/bash
 
+#Print Times are 30m before FACMON && Wait Till Next Time
+
+echo "Pings 30m before FACMON times."
+echo "Wait Till Next FACMON time...
+
 # Full path to the text file containing IP addresses and nicknames
 FILE_PATH="/home/anthony/SM.txt"
 
