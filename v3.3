@@ -50,6 +50,7 @@ while true; do
         echo -e "${LIGHT_GREEN}Pass: $nickname ($ip_address)${NC}"
       else
         echo -e "${LIGHT_RED}Fail: $nickname ($ip_address) Check Manually${NC}"
+        echo
       fi
     done < "$FILE_PATH"
   fi
