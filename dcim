@@ -23,13 +23,15 @@ LIGHT_BLUE='\033[1;34m'
 NC='\033[0m' # No color
 
 # Read each IP address from the text file and check ping status
-while IFS= read -r ip_address; do
-  nickname="${IP_NICKNAMES[$ip_address]}"
-  if ping -c 1 "$ip_address" >/dev/null; then
-    echo -e "${LIGHT_GREEN}Pass: $nickname ($ip_address)${NC}"
-  else
-    echo -e "${LIGHT_RED}Fail: $nickname ($ip_address) Check Manually${NC}"
-    echo
+    while IFS= read -r ip_address; do
+      nickname="${IP_NICKNAMES[$ip_address]}"
+      if ping -c 1 "$ip_address" >/dev/null; then
+        echo -e "${LIGHT_GREEN}Pass: $nickname ($ip_address)${NC}"
+      else
+        echo -e "${LIGHT_RED}Fail: $nickname ($ip_address) Check Manually${NC}"
+        echo
+      fi
+    done < "$FILE_PATH"
   fi
-done < "$FILE_PATH"
+
 
