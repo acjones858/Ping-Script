@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Full path to the text file containing IP addresses
-FILE_PATH="/home/anthony/SM.txt"
+FILE_PATH="/Path/to/file"
 
 # Associative array to store IP address nicknames
 declare -A IP_NICKNAMES=(
@@ -32,6 +32,6 @@ NC='\033[0m' # No color
         echo
       fi
     done < "$FILE_PATH"
-  fi
+  
 
 
